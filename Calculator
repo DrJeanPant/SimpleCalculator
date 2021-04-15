@@ -1,0 +1,143 @@
+import colored
+from colored import stylize
+import winsound
+
+class Calculator():
+
+    def __init__(self,memory=[]):
+        self.memory = memory
+
+    def clear_memory(self):
+        self.memory = []
+
+    def get_numbers(self):
+        while True:
+            try:
+                a = float(input('Please enter the first number: '))
+                break
+            except:
+                print('That is not a valid number...\n')
+
+        while True:
+            try:
+                b = float(input('Please enter the second number: '))
+                break
+            except:
+                print('That is not a valid number...\n')
+
+        return (a,b)
+
+    def get_operator(self):
+        while True:
+            op = input("What operation do you want to perform? " + stylize("( Enter: + - * / ^ ) ",colored.fg("steel_blue_1b")))
+
+            if op in '+-/*^':
+                break
+        return op
+
+    def add_numbers(self, a, b):
+        return a + b
+
+    def subtract_numbers(self, a, b):
+        return a - b
+
+    def multiply_numbers(self, a, b):
+        return a * b
+
+    def divide_numbers(self, a, b):
+        return a / b
+
+    def power(self, a, b):
+        return a ** b
+
+    def print_result(self, a, b, op, result):
+        return stylize(f"{a} {op} {b} = {result}",colored.fg("indian_red_1d"))
+
+    def save_to_memory(self, output):
+        # Ask for a response
+        while True:
+            try:
+                save = input("Do you want to save this result? " + stylize("(y/n)",colored.bg("grey_15"))+ " ")
+                if save == 'y' or save == 'n':
+                    break
+            except:
+                print('Please enter a valid response')
+
+        # save the number, updates self.memory
+
+        if save == 'y':
+            self.memory.append(output)
+
+    def print_memory(self):
+
+        if len(self.memory) == 0:
+            print(stylize('\n-- Nothing stored --',colored.fg("red_1")))
+        else:
+            print(stylize('\n-- Saved results --',colored.fg("yellow_2")))
+            for line in range(len(self.memory)):
+                print(stylize(f'Result #{line+1}: {self.memory[line]} ',colored.fg("yellow_2")))
+
+def main():
+
+    print('\n')
+    print(stylize(" ### CALCULATOR ### ",colored.fg("chartreuse_2b")))
+
+    # Start the calculator with a clear memory
+
+    my_calculator = Calculator()
+    calc_on = True
+
+    while calc_on:
+
+        # Get numbers and print result
+        print('\n')
+        a,b = my_calculator.get_numbers()
+        op = my_calculator.get_operator()
+
+        if op == '+':
+            result = my_calculator.add_numbers(a,b)
+        if op == '-':
+            result = my_calculator.subtract_numbers(a,b)
+        if op == '*':
+            result = my_calculator.multiply_numbers(a,b)
+        if op == '/':
+            result = my_calculator.divide_numbers(a,b)
+        if op == '^':
+            result = my_calculator.power(a,b)
+
+        output = my_calculator.print_result(a, b, op, result)
+        winsound.PlaySound('whoosh.wav',winsound.SND_ASYNC)
+        print('\n' + output + '\n')
+
+        # Save to memory:
+
+        my_calculator.save_to_memory(output)
+
+        # Ask what to do next:
+
+        while True:
+
+            option = input("\nPick an option: Show memory " +stylize("[s]",colored.bg("grey_15"))
+            + ", clear memory " + stylize("[c]",colored.bg("grey_15"))
+            + ", run another calculation " + stylize("[r]",colored.bg("grey_15"))
+            + ", quit " + stylize("[q]",colored.bg("grey_15")) + "? ")
+
+            if option not in 'scrq':
+                print('Not a valid response')
+
+            if option == 's':
+                my_calculator.print_memory()
+
+            if option == 'c':
+                my_calculator.clear_memory()
+
+            if option == 'r' or option == '':
+                break
+
+            if option == 'q':
+                print(stylize('\nGoodbye... :(',colored.fg("chartreuse_2b")))
+                calc_on = False
+                break
+
+if __name__ == '__main__':
+    main()
